@@ -1,0 +1,19 @@
+{
+  "name": "patchidentity",
+  "description": "",
+  "version": "1.0.0",
+  "homepage": "https://github.com/dominictarr/patchidentity",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dominictarr/patchidentity.git"
+  },
+  "dependencies": {
+    "ssb-keys": "^7.0.13"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "set -e; for t in test/*.js; do node $t; done"
+  },
+  "author": "'Dominic Tarr' <dominic.tarr@gmail.com> (dominictarr.com)",
+  "license": "MIT"
+}
