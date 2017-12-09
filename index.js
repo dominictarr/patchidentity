@@ -3,6 +3,8 @@ var create = require('ssb-validate').create
 var path = require('path')
 var ref = require('ssb-ref')
 
+var config = require('ssb-config')
+
 exports.gives = {
   identity: {
     list: true, main: true, create: true, unbox: true, publish: true
@@ -14,7 +16,7 @@ exports.needs = {
 }
 
 exports.create = function (api) {
-  var keys = ssbKeys.loadOrCreateSync(path.join(process.env.HOME, '.ssb/secret'))
+  var keys = ssbKeys.loadOrCreateSync(path.join(config.path, '.ssb/secret'))
   //TODO: load all identites stored in ~/.ssb/identities/...
   return {
     identity: {
@@ -65,8 +67,5 @@ exports.create = function (api) {
     }
   }
 }
-
-
-
 
 
