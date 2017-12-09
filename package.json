@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "ssb-keys": "^7.0.13",
-    "ssb-ref": "^2.8.1"
+    "ssb-ref": "^2.8.1",
+    "ssb-validate": "^3.0.0"
   },
   "devDependencies": {},
   "scripts": {
