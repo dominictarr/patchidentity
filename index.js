@@ -16,8 +16,10 @@ exports.needs = {
 }
 
 exports.create = function (api) {
-  var keys = ssbKeys.loadOrCreateSync(path.join(config.path, '.ssb/secret'))
+  var keys = ssbKeys.loadOrCreateSync(path.join(config.path, 'secret'))
+  console.log(config)
   //TODO: load all identites stored in ~/.ssb/identities/...
+  console.log('I AM', keys.id)
   return {
     identity: {
       list: function () { return [keys.id]},
@@ -49,12 +51,12 @@ exports.create = function (api) {
         if(!id) id = keys.id
         if(id != keys.id) return cb(new Error('unknown identity'))
         api.sbot.getLatest(id, function (err, data) {
-          var state = {
+          var state = data ?{
             id: data.key,
             sequence: data.value.sequence,
             timestamp: data.value.timestamp,
             queue: []
-          }
+          } : {id: null, sequence: null, timestamp: null, queue: []}
           if(content.recps)
             content = ssbKeys.box(content, content.recps.map(function (e) {
               return ref.isFeed(e) ? e : e.link
