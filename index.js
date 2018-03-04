@@ -3,7 +3,7 @@ var create = require('ssb-validate').create
 var path = require('path')
 var ref = require('ssb-ref')
 
-var config = require('ssb-config')
+var config = require('ssb-config/inject')(process.env.ssb_appname)
 
 exports.gives = {
   identity: {
