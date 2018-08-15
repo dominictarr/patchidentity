@@ -3,26 +3,34 @@ var create = require('ssb-validate').create
 var path = require('path')
 var ref = require('ssb-ref')
 
+function isFunction (f) {
+  return 'function' === typeof f
+}
+
 var config = require('ssb-config/inject')(process.env.ssb_appname)
 
 exports.gives = {
   identity: {
     list: true, main: true, create: true, unbox: true, publish: true
-  }
+  },
 }
 exports.needs = {
-  sbot: { getLatest: 'first', add: 'first' }
+  sbot: {
+    getLatest: 'first', add: 'first',
+    identities: { publishAs: 'first' }
+  },
 //config ?
 }
 
 exports.create = function (api) {
   var keys = ssbKeys.loadOrCreateSync(path.join(config.path, 'secret'))
-  console.log(config)
   //TODO: load all identites stored in ~/.ssb/identities/...
-  console.log('I AM', keys.id)
   return {
     identity: {
-      list: function () { return [keys.id]},
+      list: function () {
+        throw new Error('use sbot.identities.list(cb)')
+//        return [keys.id]
+      },
       main: function () { return keys.id },
       create: function () {
         //generate a new identity
@@ -48,26 +56,14 @@ exports.create = function (api) {
         }
       },
       publish: function (content, id, cb) {
+        if(isFunction(id)) cb = id, id = keys.id
+        if(!cb) cb = function (err) {
+          if(err) console.error(err)
+        }
         if(!id) id = keys.id
-        if(id != keys.id) return cb(new Error('unknown identity'))
-        api.sbot.getLatest(id, function (err, data) {
-          var state = data ?{
-            id: data.key,
-            sequence: data.value.sequence,
-            timestamp: data.value.timestamp,
-            queue: []
-          } : {id: null, sequence: null, timestamp: null, queue: []}
-          if(content.recps)
-            content = ssbKeys.box(content, content.recps.map(function (e) {
-              return ref.isFeed(e) ? e : e.link
-            }))
-
-          var msg = create(state, keys, null, content, Date.now())
-          api.sbot.add(msg, cb)
-        })
+        api.sbot.identities.publishAs({content: content, id: id}, cb)
       }
     }
   }
 }
-
 
