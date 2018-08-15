@@ -61,7 +61,11 @@ exports.create = function (api) {
           if(err) console.error(err)
         }
         if(!id) id = keys.id
-        api.sbot.identities.publishAs({content: content, id: id}, cb)
+        api.sbot.identities.publishAs({
+          content: content,
+          id: id,
+          private: content.recps != null
+        }, cb)
       }
     }
   }
